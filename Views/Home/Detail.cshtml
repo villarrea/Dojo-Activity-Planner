@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="~/css/style.css"/>
+
+    <title>Document</title>
+</head>
+<body>
+    <h1> Dojo Activity Center</h1>
+    <br>
+    <a href="/dashboard">Dashboard</a> | <a href="logout">Logout</a>
+    <br>
+    <h2 style="color:White">@ViewBag.ThisActivity.Title</h2>
+    <br>
+     @if (ViewBag.ThisActivity.PlannerId == ViewBag.ThisUser.UserId)
+    {
+        <button><a class="btn" href="/delete/@ViewBag.ThisActivity.ActvtyId">Delete</a></button>
+    }
+    else
+    {
+        int temp = 0;
+        @foreach (var a in ViewBag.AllParticipants)
+        {
+            if (a.User.UserId == ViewBag.ThisUser.UserId)
+            {
+                temp = a.ParticipationId;
+            }
+        }
+        @if (temp == 0)
+        {
+            <button><a class="btn" href="/join/@ViewBag.ThisActivity.ActvtyId">Join</a></button>
+        }
+        else
+        {
+            <button><a class="btn" href="/leave/@temp">Leave</a></button>
+        }
+    }
+
+    <h3>Event Coordinator: @ViewBag.EventCoordinator.FirstName</h3>
+    <h3>Description:</h3>
+    <p>@ViewBag.ThisActivity.Description</p>
+    <h3>Guests:</h3>
+
+        @foreach (var p in ViewBag.AllParticipants)
+        {
+            <h4>@p.User.FirstName</h4>
+        }
+
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="~/css/style.css"/>
+    <title>Activity</title>
+
+</head>
+<body>
+    <h1>Welcome To The Dojo Activity Planner, @ViewBag.ThisUser.FirstName!</h1>
+    <br>
+    <br>
+    <a href="logout"><button>Logout</button></a>
+    <br>
+    <br>
+    <br>
+
+    <table class="table table-bordered table-dark">
+
+  <thead>
+    <tr>
+      <th scope="col">Activity</th>
+      <th scope="col">Date and Time</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Event Coordinator</th>
+      <th scope="col">Number of Participants</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @if (ViewBag.AllActivities !=null)
+    {
+
+        @foreach (var x in ViewBag.AllActivities)
+        {
+            <tr>
+                <td><a href="/detail/@x.ActvtyId">@x.Title</a></td>
+                <td>@x.ActivityDate.ToString("M/d") at @x.ActivityDate.ToString("h:mmtt")</td>
+                <td>@x.Duration @x.ActUnit</td>
+
+                @if(@ViewBag.Creators != null)
+                {
+                    @foreach(var c in ViewBag.Creators)
+                    {
+                        @if(x.PlannerId == c.UserId)
+                        {
+                            <td>@c.FirstName</td>
+                        }
+                    }
+                }
+
+                <td>@x.ActivityAttendees.Count</td>
+
+                @if(@x.PlannerId == ViewBag.ThisUser.UserId)
+                {
+                    <td><a href="/delete/@x.ActvtyId ">Delete</a></td>
+                }
+                else
+                {
+                    int temp = 0;
+                    @foreach(var u in x.ActivityAttendees)
+                    {
+                        @if(u.User.UserId == ViewBag.ThisUser.UserId)
+                        {
+                            temp = u.ParticipationId; 
+                        }
+                    }
+                    @if(temp == 0)
+                    {
+                        <td><a href="/join/@x.ActvtyId ">Join</a></td>
+                    }
+                    else
+                    {
+                        <td><a href="/leave/@temp">Leave</a></td>                    
+                    }
+                }
+            </tr>
+        }
+    }
+    </tbody>
+</table>
+
+    <a href="add"><button>Add A New Activity</button></a>
+
+</body>
+</html>
